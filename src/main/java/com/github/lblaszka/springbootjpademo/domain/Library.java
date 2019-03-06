@@ -16,16 +16,18 @@ import java.util.List;
 @NoArgsConstructor
 
 @Entity
+@Table( name = "LIBRARY" )
 public class Library
 {
     @Id
     @GeneratedValue( strategy = GenerationType.AUTO )
+    @Column( name = "ID" )
     private Long id;
 
-    @Column( nullable = false )
+    @Column( name = "NAME", nullable = false )
     private String name;
 
     @OneToMany( mappedBy = "library", orphanRemoval = true )
     @JsonIgnore
-    private List<Book> bookList = new ArrayList<>();
+    private List<Book> bookList;
 }

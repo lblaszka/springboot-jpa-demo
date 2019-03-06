@@ -11,13 +11,15 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table( name = "BOOK" )
 public class Book
 {
     @Id
     @GeneratedValue( strategy = GenerationType.AUTO )
+    @Column( name = "ID" )
     private Long id;
 
-    @Column( nullable = false )
+    @Column( name = "NAME", nullable = false )
     private String name;
 
     @ManyToOne

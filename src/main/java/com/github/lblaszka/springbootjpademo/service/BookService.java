@@ -16,7 +16,7 @@ import static com.github.lblaszka.springbootjpademo.config.BookConfig.BOOK_NAME_
 public class BookService
 {
     @Autowired
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
 
     public List<Book> getAll()
     {
@@ -41,6 +41,43 @@ public class BookService
         if( book.getLibrary() == null )
             return new ResponseEntity<>( HttpStatus.CONFLICT );
 
-        return new ResponseEntity<>( bookRepository.save(  book ), HttpStatus.OK );
+        try
+        {
+            return new ResponseEntity<>( bookRepository.save(  book ), HttpStatus.OK );
+        }
+        catch ( Exception ex )
+        {
+            System.err.println( ex.getMessage() );
+            return new ResponseEntity<>( HttpStatus.CONFLICT );
+        }
+
+    }
+
+    public ResponseEntity delete( Book book )
+    {
+        try
+        {
+            bookRepository.delete( book );
+        }
+        catch ( Exception ex )
+        {
+            System.err.println( ex.getMessage() );
+            return new ResponseEntity( HttpStatus.CONFLICT );
+        }
+        return new ResponseEntity( HttpStatus.OK );
+    }
+
+    public ResponseEntity deleteById( Long bookId )
+    {
+        try
+        {
+            bookRepository.deleteById( bookId );
+        }
+        catch ( Exception ex )
+        {
+            System.err.println( ex.getMessage() );
+            return new ResponseEntity( HttpStatus.CONFLICT );
+        }
+        return new ResponseEntity( HttpStatus.OK );
     }
 }

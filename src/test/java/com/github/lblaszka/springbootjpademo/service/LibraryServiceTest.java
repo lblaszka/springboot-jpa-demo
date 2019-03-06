@@ -1,11 +1,13 @@
 package com.github.lblaszka.springbootjpademo.service;
 
+import com.github.lblaszka.springbootjpademo.domain.Book;
 import com.github.lblaszka.springbootjpademo.domain.Library;
 import com.github.lblaszka.springbootjpademo.repository.LibraryRepository;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -24,12 +26,15 @@ public class LibraryServiceTest
     LibraryRepository libraryRepository;
 
     @Autowired
+    BookService bookService;
+
+    @Autowired
     LibraryService libraryService;
 
     @Test
     public void getAllTest()
     {
-        libraryRepository.deleteAllInBatch();
+        libraryRepository.deleteAll();
         List<Library> libraryList = genLibraryList();
 
         libraryList = libraryRepository.saveAll( libraryList );
@@ -45,48 +50,66 @@ public class LibraryServiceTest
     @Test
     public void getByIdTest()
     {
-        libraryRepository.deleteAllInBatch();
+        libraryRepository.deleteAll();
         libraryRepository.saveAll( genLibraryList() );
         int libraryNumber = (int) libraryRepository.count();
         int firstId = Math.toIntExact( libraryRepository.findAll().get( 0 ).getId() );
 
         for( int libraryId = firstId ; libraryId <= libraryNumber; libraryId ++ )
         {
-            Library library = libraryService.getById( new Long( libraryId ) ).getBody();
-            Assert.assertEquals( libraryService.getById( new Long( libraryId ) ).getStatusCode(), HttpStatus.OK );
-            Assert.assertEquals( libraryService.getById( new Long( libraryId ) ).getBody().getId(), libraryRepository.findById( new Long( libraryId ) ).get().getId() );
+            Assert.assertEquals(  HttpStatus.OK, libraryService.getById( new Long( libraryId ) ).getStatusCode() );
+            Assert.assertEquals( libraryRepository.findById( new Long( libraryId ) ).get().getId(), libraryService.getById( new Long( libraryId ) ).getBody().getId() );
         }
-        Assert.assertEquals( libraryService.getById( new Long( -1 ) ).getStatusCode(), HttpStatus.CONFLICT );
-        Assert.assertEquals( libraryService.getById( new Long( 0L ) ).getStatusCode(), HttpStatus.CONFLICT );
-        Assert.assertEquals( libraryService.getById( new Long( firstId+libraryNumber+1 ) ).getStatusCode(), HttpStatus.CONFLICT );
+        Assert.assertEquals( HttpStatus.CONFLICT, libraryService.getById( new Long( -1 ) ).getStatusCode() );
+        Assert.assertEquals( HttpStatus.CONFLICT, libraryService.getById( new Long( 0L ) ).getStatusCode() );
+        Assert.assertEquals( HttpStatus.CONFLICT, libraryService.getById( new Long( firstId+libraryNumber+1 ) ).getStatusCode() );
 
     }
 
     @Test
     public void addIncorrectTest()
     {
-        Assert.assertEquals( libraryService.add( new Library(  ) ).getStatusCode(), HttpStatus.CONFLICT );
-        Assert.assertEquals( libraryService.add( new Library( 0L, getIncorrectLibraryName(), null ) ).getStatusCode(), HttpStatus.CONFLICT );
+        Assert.assertEquals( HttpStatus.CONFLICT, libraryService.add( new Library(  ) ).getStatusCode());
+        Assert.assertEquals( HttpStatus.CONFLICT, libraryService.add(  new Library( 0L, getIncorrectLibraryName(), null ) ).getStatusCode() );
         }
 
     @Test
     public void addDuplicateNameTest()
     {
-        libraryRepository.deleteAllInBatch();
+        libraryRepository.deleteAll();
 
-        Assert.assertEquals( libraryService.add( new Library( 0L, getCorrectLibraryNameWithIndex( 0 ), null ) ).getStatusCode(), HttpStatus.OK );
-        Assert.assertEquals( libraryService.add( new Library( 0L, getCorrectLibraryNameWithIndex( 0 ),null ) ).getStatusCode(), HttpStatus.CONFLICT );
+        Assert.assertEquals( HttpStatus.OK, libraryService.add( new Library( 0L, getCorrectLibraryNameWithIndex( 0 ), null ) ).getStatusCode() );
+        Assert.assertEquals( HttpStatus.CONFLICT, libraryService.add( new Library( 0L, getCorrectLibraryNameWithIndex( 0 ),null ) ).getStatusCode() );
     }
 
     @Test
     public void addCorrectTest()
     {
-        libraryRepository.deleteAllInBatch();
+        libraryRepository.deleteAll();
         Library library1 = new Library( 0L, getCorrectLibraryNameWithIndex( 0 ),null );
         Library library2 = new Library( 0L,getCorrectLibraryNameWithIndex( 1 ),null );
 
-        Assert.assertEquals( libraryService.add( library1 ).getStatusCode(), HttpStatus.OK );
+        Assert.assertEquals(  HttpStatus.OK, libraryService.add( library1 ).getStatusCode() );
         Assert.assertNotNull( libraryService.add( library2 ).getBody() );
+    }
+
+    @Test
+    public void deleteTest()
+    {
+        libraryRepository.deleteAll();
+
+        Library library1 = libraryService.add( new Library( 0L, "From deleteTest 1", null ) ).getBody();
+        Library library2 = libraryService.add( new Library( 0L, "From deleteTest 2", null ) ).getBody();
+
+
+        Assert.assertEquals( HttpStatus.OK, libraryService.getById( library1.getId() ).getStatusCode() );
+        Assert.assertEquals( HttpStatus.OK, libraryService.delete( library1 ).getStatusCode() );
+        Assert.assertEquals( HttpStatus.CONFLICT, libraryService.getById( library1.getId() ).getStatusCode() );
+
+        Assert.assertEquals( HttpStatus.OK, libraryService.getById( library2.getId() ).getStatusCode() );
+        Assert.assertEquals( HttpStatus.OK, libraryService.deleteById( library2.getId() ).getStatusCode() );
+        Assert.assertEquals( HttpStatus.CONFLICT, libraryService.getById( library2.getId() ).getStatusCode() );
+
     }
 
 

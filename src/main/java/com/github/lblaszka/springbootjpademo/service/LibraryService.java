@@ -16,7 +16,7 @@ import static com.github.lblaszka.springbootjpademo.config.LibraryConfig.LIBRARY
 public class LibraryService
 {
     @Autowired
-    LibraryRepository libraryRepository;
+    private LibraryRepository libraryRepository;
 
     public List<Library> getAll()
     {
@@ -42,5 +42,33 @@ public class LibraryService
             return new ResponseEntity<>( HttpStatus.CONFLICT );
 
         return new ResponseEntity<>( libraryRepository.save( library ), HttpStatus.OK );
+    }
+
+    public ResponseEntity delete( Library library )
+    {
+        try
+        {
+            libraryRepository.delete( library );
+        }
+        catch ( Exception ex )
+        {
+            System.err.println( ex.getMessage() );
+            return new ResponseEntity( HttpStatus.CONFLICT );
+        }
+        return new ResponseEntity( HttpStatus.OK );
+    }
+
+    public ResponseEntity deleteById( Long libraryId )
+    {
+        try
+        {
+            libraryRepository.deleteById( libraryId );
+        }
+        catch ( Exception ex )
+        {
+            System.err.println( ex.getMessage() );
+            return new ResponseEntity( HttpStatus.CONFLICT );
+        }
+        return new ResponseEntity( HttpStatus.OK );
     }
 }
