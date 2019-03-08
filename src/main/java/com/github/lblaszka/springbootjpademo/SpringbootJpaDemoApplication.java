@@ -30,5 +30,7 @@ public class SpringbootJpaDemoApplication implements CommandLineRunner
 
 		Book book = new Book( 0L, "WitamK",library );
 		bookRepository.save( book );
+		Book book2 = new Book( 2L, "Zmienione", library);
+		bookRepository.save( book2 );
 	}
 }

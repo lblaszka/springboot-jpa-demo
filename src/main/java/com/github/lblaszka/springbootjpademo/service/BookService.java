@@ -10,13 +10,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static com.github.lblaszka.springbootjpademo.config.BookConfig.BOOK_NAME_NIM_LENGTH;
-
 @Service
 public class BookService
 {
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private BookValidator bookValidator;
 
     public List<Book> getAll()
     {
@@ -35,14 +36,12 @@ public class BookService
 
     public ResponseEntity<Book> add( Book book )
     {
-        if( book.getName() == null || book.getName().length() < BOOK_NAME_NIM_LENGTH )
-            return new ResponseEntity<>( HttpStatus.CONFLICT );
-
-        if( book.getLibrary() == null )
+        if( bookValidator.check( book ) == false )
             return new ResponseEntity<>( HttpStatus.CONFLICT );
 
         try
         {
+            book.setId( 0L );
             return new ResponseEntity<>( bookRepository.save(  book ), HttpStatus.OK );
         }
         catch ( Exception ex )
@@ -79,5 +78,30 @@ public class BookService
             return new ResponseEntity( HttpStatus.CONFLICT );
         }
         return new ResponseEntity( HttpStatus.OK );
+    }
+
+    public ResponseEntity<Book> update( Book book )
+    {
+        if( bookValidator.checkUpdate( book ) == false  )
+            return new ResponseEntity<>( HttpStatus.CONFLICT );
+        if( bookRepository.findById( book.getId() ).isPresent() )
+        {
+            try
+            {
+                return new ResponseEntity<>( bookRepository.save( book ), HttpStatus.OK );
+            }
+            catch ( Exception exc )
+            {
+                System.err.println( exc.getMessage() );
+            }
+        }
+
+        return new ResponseEntity<>( HttpStatus.CONFLICT );
+    }
+
+    public ResponseEntity<Book> update( Book book, Long id )
+    {
+        book.setId( id );
+        return update( book );
     }
 }

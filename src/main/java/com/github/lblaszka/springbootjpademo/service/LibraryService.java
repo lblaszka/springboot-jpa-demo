@@ -41,6 +41,7 @@ public class LibraryService
         if( libraryRepository.findByName( library.getName() ).isPresent() )
             return new ResponseEntity<>( HttpStatus.CONFLICT );
 
+        library.setId( 0L );
         return new ResponseEntity<>( libraryRepository.save( library ), HttpStatus.OK );
     }
 
