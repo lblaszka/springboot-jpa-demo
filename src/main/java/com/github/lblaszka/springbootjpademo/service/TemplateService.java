@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface DomainService< T, ID >
+public interface TemplateService< T, ID >
 {
     ResponseEntity<T> add( T t );
 

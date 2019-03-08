@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import static com.github.lblaszka.springbootjpademo.config.BookConfig.BOOK_NAME_NIM_LENGTH;
 
 @Component
-public class BookValidator implements DomainValidator<Book>
+public class BookValidator implements TemplateValidator<Book>
 {
 
     @Override

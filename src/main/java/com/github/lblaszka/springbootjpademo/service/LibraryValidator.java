@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import static com.github.lblaszka.springbootjpademo.config.LibraryConfig.LIBRARY_NAME_MIN_LENGTH;
 
 @Component
-public class LibraryValidator implements DomainValidator<Library>
+public class LibraryValidator implements TemplateValidator<Library>
 {
     @Override
     public boolean toAdd( Library library )

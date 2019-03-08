@@ -8,12 +8,12 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class DomainServiceImpl< T, ID > implements DomainService<T, ID>
+public abstract class TemplateServiceImpl< T, ID > implements TemplateService<T, ID>
 {
     @Autowired
     private JpaRepository<T, ID> repository;
     @Autowired
-    private DomainValidator<T> validator;
+    private TemplateValidator<T> validator;
 
     abstract ID getId( T t );
 

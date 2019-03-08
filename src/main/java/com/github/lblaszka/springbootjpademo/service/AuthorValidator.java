@@ -7,7 +7,7 @@ import static com.github.lblaszka.springbootjpademo.config.AuthorConfig.AUTHOR_N
 import static com.github.lblaszka.springbootjpademo.config.AuthorConfig.AUTHOR_SURNAME_MIN_LENGTH;
 
 @Component
-public class AuthorValidator implements DomainValidator<Author>
+public class AuthorValidator implements TemplateValidator<Author>
 {
     @Override
     public boolean toAdd( Author author )
