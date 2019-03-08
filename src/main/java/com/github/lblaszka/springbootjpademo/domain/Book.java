@@ -13,7 +13,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table( name = "BOOK" )
-public class Book implements Domain<Long>
+public class Book
 {
     @Id
     @GeneratedValue( strategy = GenerationType.AUTO )
