@@ -24,7 +24,7 @@ public class Library
     @Column( name = "ID" )
     private Long id;
 
-    @Column( name = "NAME", nullable = false )
+    @Column( name = "NAME", nullable = false, unique = true )
     private String name;
 
     @OneToMany( mappedBy = "library", orphanRemoval = true )

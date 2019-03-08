@@ -13,63 +13,11 @@ import java.util.Optional;
 import static com.github.lblaszka.springbootjpademo.config.LibraryConfig.LIBRARY_NAME_MIN_LENGTH;
 
 @Service
-public class LibraryService
+public class LibraryService extends DomainServiceImpl<Library, Long>
 {
-    @Autowired
-    private LibraryRepository libraryRepository;
-
-    public List<Library> getAll()
+    @Override
+    Long getId( Library library )
     {
-        return libraryRepository.findAll();
-    }
-
-    public ResponseEntity<Library> getById( Long libraryId )
-    {
-        Optional<Library> libraryOptional = libraryRepository.findById( libraryId );
-
-        if( libraryOptional.isPresent() )
-            return new ResponseEntity<>( libraryOptional.get(), HttpStatus.OK );
-
-        return new ResponseEntity<>( HttpStatus.CONFLICT );
-    }
-
-    public ResponseEntity<Library> add( Library library )
-    {
-        if( library.getName() == null || library.getName().length() < LIBRARY_NAME_MIN_LENGTH )
-            return new ResponseEntity<>( HttpStatus.CONFLICT );
-
-        if( libraryRepository.findByName( library.getName() ).isPresent() )
-            return new ResponseEntity<>( HttpStatus.CONFLICT );
-
-        library.setId( 0L );
-        return new ResponseEntity<>( libraryRepository.save( library ), HttpStatus.OK );
-    }
-
-    public ResponseEntity delete( Library library )
-    {
-        try
-        {
-            libraryRepository.delete( library );
-        }
-        catch ( Exception ex )
-        {
-            System.err.println( ex.getMessage() );
-            return new ResponseEntity( HttpStatus.CONFLICT );
-        }
-        return new ResponseEntity( HttpStatus.OK );
-    }
-
-    public ResponseEntity deleteById( Long libraryId )
-    {
-        try
-        {
-            libraryRepository.deleteById( libraryId );
-        }
-        catch ( Exception ex )
-        {
-            System.err.println( ex.getMessage() );
-            return new ResponseEntity( HttpStatus.CONFLICT );
-        }
-        return new ResponseEntity( HttpStatus.OK );
+        return library.getId();
     }
 }

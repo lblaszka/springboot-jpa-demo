@@ -7,10 +7,10 @@ import static com.github.lblaszka.springbootjpademo.config.AuthorConfig.AUTHOR_N
 import static com.github.lblaszka.springbootjpademo.config.AuthorConfig.AUTHOR_SURNAME_MIN_LENGTH;
 
 @Component
-public class AuthorValidatorImpl implements AuthorValidator
+public class AuthorValidator implements DomainValidator<Author>
 {
     @Override
-    public boolean checkToAdd( Author author )
+    public boolean toAdd( Author author )
     {
         if( author == null )
             return false;
@@ -21,7 +21,7 @@ public class AuthorValidatorImpl implements AuthorValidator
         if( author.getSurname() == null || author.getSurname().length() < AUTHOR_SURNAME_MIN_LENGTH )
             return false;
 
-        if( author.getId() == null || author.getId() != 0L )
+        if( author.getId() != null && author.getId() != 0L )
             return false;
 
         return true;
@@ -29,7 +29,7 @@ public class AuthorValidatorImpl implements AuthorValidator
 
 
     @Override
-    public boolean checkToUpdate( Author author )
+    public boolean toUpdate( Author author )
     {
         if( author == null )
             return false;

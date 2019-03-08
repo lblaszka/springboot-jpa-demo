@@ -114,6 +114,9 @@ public class BookServiceTest
     {
         Book book = bookService.add( new Book( 0L, getCorrectBookName(), libraryList.get( 0 ) ) ).getBody();
 
+        System.out.println(book.getId());
+        System.out.println(book.getName());
+
         book.setName( "New" + getCorrectBookName() );
         Assert.assertEquals( HttpStatus.OK, bookService.update( book ).getStatusCode() );
         Assert.assertEquals( book, bookService.getById( book.getId() ).getBody() );

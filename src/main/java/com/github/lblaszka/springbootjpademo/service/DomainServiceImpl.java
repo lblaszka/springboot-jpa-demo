@@ -20,7 +20,7 @@ public abstract class DomainServiceImpl< T, ID > implements DomainService<T, ID>
     @Override
     public ResponseEntity<T> add( T t )
     {
-        if( validator.toAdd( t ) && !( repository.findById( getId( t ) ).isPresent() )  )
+        if( validator.toAdd( t ) )
         {
             try
             {

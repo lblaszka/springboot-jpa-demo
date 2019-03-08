@@ -1,10 +1,12 @@
 package com.github.lblaszka.springbootjpademo.service;
 
 import com.github.lblaszka.springbootjpademo.domain.Library;
+import org.springframework.stereotype.Component;
 
 import static com.github.lblaszka.springbootjpademo.config.LibraryConfig.LIBRARY_NAME_MIN_LENGTH;
 
-public class LibraryValidatorImpl implements DomainValidator<Library>
+@Component
+public class LibraryValidator implements DomainValidator<Library>
 {
     @Override
     public boolean toAdd( Library library )
