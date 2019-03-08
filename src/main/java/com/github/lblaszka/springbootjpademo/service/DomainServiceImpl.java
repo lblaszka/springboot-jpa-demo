@@ -8,17 +8,19 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class DomainServiceImpl<T, ID> implements DomainService<T, ID>
+public abstract class DomainServiceImpl< T, ID > implements DomainService<T, ID>
 {
     @Autowired
     private JpaRepository<T, ID> repository;
     @Autowired
     private DomainValidator<T> validator;
 
+    abstract ID getId( T t );
+
     @Override
     public ResponseEntity<T> add( T t )
     {
-        if( validator.toAdd( t ) )
+        if( validator.toAdd( t ) && !( repository.findById( getId( t ) ).isPresent() )  )
         {
             try
             {
@@ -36,7 +38,7 @@ public abstract class DomainServiceImpl<T, ID> implements DomainService<T, ID>
     @Override
     public ResponseEntity<T> update( T t )
     {
-        if( validator.toUpdate( t ) )
+        if( validator.toUpdate( t ) && ( repository.findById( getId( t ) ).isPresent() ) )
         {
             try
             {

@@ -105,8 +105,8 @@ public class BookServiceTest
     {
         Book book = bookService.add( new Book( 0L, getCorrectBookName(), libraryList.get( 0 ) ) ).getBody();
 
-        Assert.assertEquals( HttpStatus.OK, bookService.add( new Book( book.getId(), getCorrectBookName(), libraryList.get( 0 ) ) ).getStatusCode() );
-        Assert.assertEquals( 2L, bookRepository.count() );
+        Assert.assertEquals( HttpStatus.CONFLICT, bookService.add( new Book( book.getId(), getCorrectBookName(), libraryList.get( 0 ) ) ).getStatusCode() );
+        Assert.assertEquals( 1L, bookRepository.count() );
     }
 
     @Test

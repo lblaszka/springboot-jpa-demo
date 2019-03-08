@@ -6,10 +6,11 @@ import org.springframework.stereotype.Component;
 import static com.github.lblaszka.springbootjpademo.config.BookConfig.BOOK_NAME_NIM_LENGTH;
 
 @Component
-public class BookValidatorImpl implements BookValidator
+public class BookValidatorImpl implements DomainValidator<Book>
 {
+
     @Override
-    public boolean check( Book book )
+    public boolean toAdd( Book book )
     {
         if( book == null )
             return false;
@@ -21,10 +22,11 @@ public class BookValidatorImpl implements BookValidator
         return true;
     }
 
+
     @Override
-    public boolean checkUpdate( Book book )
+    public boolean toUpdate( Book book )
     {
-        if( this.check( book ) )
+        if( this.toAdd( book ) )
         {
             if( book.getId() > 0L )
                 return true;
